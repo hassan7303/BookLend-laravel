@@ -95,28 +95,45 @@ POST /api/logout
 
 ---
 
-## ⚙️دیتابیس
+## ⚙️ دیتابیس
 
 ### Users
 
-| ستون                   | نوع                      | توضیح               |
-| ---------------------- | ------------------------ | ------------------- |
-| id                     | INT                      | شناسه کاربر         |
-| full_name              | VARCHAR(100)             | نام کامل کاربر      |
-| email                  | VARCHAR(100)             | ایمیل کاربر         |
-| phone                  | VARCHAR(20)              | شماره تلفن          |
-| password               | VARCHAR                  | رمز عبور هش شده     |
-| status                 | VARCHAR | ('active','blocked')وضعیت کاربر         |
-| created_at, updated_at | TIMESTAMP                | زمان ایجاد و ویرایش |
+| ستون                   | نوع                   | توضیح                        |
+| ---------------------- | --------------------- | ---------------------------- |
+| id                     | BIGINT AUTO_INCREMENT | شناسه کاربر                  |
+| full_name              | VARCHAR(255)          | نام کامل کاربر               |
+| email                  | VARCHAR(255)          | ایمیل کاربر                  |
+| phone                  | VARCHAR(20)           | شماره تلفن                   |
+| password               | VARCHAR               | رمز عبور هش شده              |
+| status                 | VARCHAR               | وضعیت کاربر (active/blocked) |
+| created_at, updated_at | TIMESTAMP             | زمان ایجاد و ویرایش          |
+| remember_token         | VARCHAR(100)          | توکن حفظ جلسه                |
+
+### Authors
+
+| ستون                   | نوع          | توضیح               |
+| ---------------------- | ------------ | ------------------- |
+| id                     | BIGINT       | شناسه نویسنده       |
+| name                   | VARCHAR(255) | نام نویسنده         |
+| created_at, updated_at | TIMESTAMP    | زمان ایجاد و ویرایش |
+
+### Categories
+
+| ستون                   | نوع          | توضیح               |
+| ---------------------- | ------------ | ------------------- |
+| id                     | BIGINT       | شناسه دسته‌بندی     |
+| name                   | VARCHAR(255) | نام دسته‌بندی       |
+| created_at, updated_at | TIMESTAMP    | زمان ایجاد و ویرایش |
 
 ### Books
 
 | ستون                   | نوع          | توضیح               |
 | ---------------------- | ------------ | ------------------- |
-| id                     | INT          | شناسه کتاب          |
+| id                     | BIGINT       | شناسه کتاب          |
 | title                  | VARCHAR(200) | عنوان کتاب          |
-| author_id              | INT          | مرجع نویسنده        |
-| category_id            | INT          | مرجع دسته‌بندی      |
+| author_id              | BIGINT       | مرجع نویسنده        |
+| category_id            | BIGINT       | مرجع دسته‌بندی      |
 | description            | TEXT         | توضیحات             |
 | created_at, updated_at | TIMESTAMP    | زمان ایجاد و ویرایش |
 
@@ -124,30 +141,30 @@ POST /api/logout
 
 | ستون                   | نوع         | توضیح                                                                   |
 | ---------------------- | ----------- | ----------------------------------------------------------------------- |
-| id                     | INT         | شناسه نسخه                                                              |
-| book_id                | INT         | مرجع کتاب                                                               |
+| id                     | BIGINT      | شناسه نسخه                                                              |
+| book_id                | BIGINT      | مرجع کتاب                                                               |
 | barcode                | VARCHAR(50) | بارکد نسخه                                                              |
-| status                 | VARCHAR        | وضعیت نسخه (available, borrowed, reserved, library_only, damaged, lost) |
+| status                 | VARCHAR     | وضعیت نسخه (available, borrowed, reserved, library_only, damaged, lost) |
 | created_at, updated_at | TIMESTAMP   | زمان ایجاد و ویرایش                                                     |
 
 ### Borrows
 
 | ستون                   | نوع       | توضیح                                  |
 | ---------------------- | --------- | -------------------------------------- |
-| id                     | INT       | شناسه امانت                            |
-| user_id                | INT       | مرجع کاربر                             |
-| book_copy_id           | INT       | مرجع نسخه کتاب                         |
+| id                     | BIGINT    | شناسه امانت                            |
+| user_id                | BIGINT    | مرجع کاربر                             |
+| book_copy_id           | BIGINT    | مرجع نسخه کتاب                         |
 | borrow_date            | DATE      | تاریخ امانت                            |
 | due_date               | DATE      | تاریخ سررسید                           |
 | return_date            | DATE      | تاریخ بازگشت                           |
-| status                 | VARCHAR      | وضعیت امانت (borrowed, returned, late) |
+| status                 | VARCHAR   | وضعیت امانت (borrowed, returned, late) |
 | created_at, updated_at | TIMESTAMP | زمان ایجاد و ویرایش                    |
 
 ### FineRules
 
 | ستون                   | نوع         | توضیح               |
 | ---------------------- | ----------- | ------------------- |
-| id                     | INT         | شناسه قانون جریمه   |
+| id                     | BIGINT      | شناسه قانون جریمه   |
 | per_day_amount         | INT         | مبلغ جریمه روزانه   |
 | currency               | VARCHAR(10) | واحد پول            |
 | active                 | BOOLEAN     | فعال/غیرفعال        |
@@ -157,14 +174,29 @@ POST /api/logout
 
 | ستون                   | نوع       | توضیح               |
 | ---------------------- | --------- | ------------------- |
-| id                     | INT       | شناسه جریمه         |
-| borrow_id              | INT       | مرجع امانت          |
+| id                     | BIGINT    | شناسه جریمه         |
+| borrow_id              | BIGINT    | مرجع امانت          |
 | days_late              | INT       | تعداد روز تأخیر     |
 | amount                 | INT       | مبلغ جریمه          |
 | paid                   | BOOLEAN   | وضعیت پرداخت        |
 | paid_date              | DATE      | تاریخ پرداخت        |
 | created_at, updated_at | TIMESTAMP | زمان ایجاد و ویرایش |
 
+### PersonalAccessTokens (Sanctum)
+
+| ستون                   | نوع         | توضیح                 |
+| ---------------------- | ----------- | --------------------- |
+| id                     | BIGINT      | شناسه توکن            |
+| tokenable_type         | VARCHAR     | نوع مدل مربوطه        |
+| tokenable_id           | BIGINT      | شناسه مدل مربوطه      |
+| name                   | TEXT        | نام توکن              |
+| token                  | VARCHAR(64) | مقدار توکن            |
+| abilities              | TEXT        | قابلیت‌های توکن       |
+| last_used_at           | TIMESTAMP   | آخرین استفاده از توکن |
+| expires_at             | TIMESTAMP   | تاریخ انقضای توکن     |
+| created_at, updated_at | TIMESTAMP   | زمان ایجاد و ویرایش   |
+
+---
 ---
 
 ## ⚡ نکات حرفه‌ای
